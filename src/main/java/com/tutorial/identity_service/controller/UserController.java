@@ -38,6 +38,11 @@ public class UserController {
         return userService.getUsers();
     }
 
+    @PatchMapping("/{userId}")
+    void deleteUser(@PathVariable("userId") String userId) {
+        userService.deleteUser(userId);
+    }
+
     @GetMapping("/{userId}")
     UserResponse getUser(@PathVariable("userId") String userId) {
         return userService.getUser(userId);
