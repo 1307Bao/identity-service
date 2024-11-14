@@ -8,6 +8,7 @@ import com.tutorial.identity_service.enums.Role;
 import com.tutorial.identity_service.exception.AppRunTimeException;
 import com.tutorial.identity_service.exception.ErrorCode;
 import com.tutorial.identity_service.mapper.UserMapper;
+import com.tutorial.identity_service.repository.RoleRepository;
 import com.tutorial.identity_service.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class UserService  {
 
     UserRepository userRepository;
     UserMapper userMapper;
+    RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
 
     public User createUser(UserCreationRequest request) {
@@ -65,12 +67,16 @@ public class UserService  {
     }
 
     public UserResponse updateUser(String id, UserUpdateRequest request) {
-        User userTaken = userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        userMapper.updateUser(userTaken, request);
+        userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        return userMapper.toUserResponse(userRepository.save(userTaken));
+        var roles =  roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
     public UserResponse getMyInfo() {

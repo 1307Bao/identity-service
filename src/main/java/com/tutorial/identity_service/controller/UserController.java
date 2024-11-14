@@ -34,8 +34,10 @@ public class UserController {
     }
 
     @GetMapping
-    List<UserResponse> getUsers() {
-        return userService.getUsers();
+    ApiResponse<List<UserResponse>> getUsers() {
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getUsers())
+                .build();
     }
 
     @PatchMapping("/{userId}")
