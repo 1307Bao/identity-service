@@ -1,6 +1,8 @@
 package com.tutorial.identity_service.dto.request;
 
 import com.tutorial.identity_service.exception.ErrorCode;
+import com.tutorial.identity_service.validator.DoBConstraint;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,5 +22,8 @@ public class UserCreationRequest {
     String password;
     String firstName;
     String lastName;
+
+    @DoBConstraint(min = 18)
+    @NotNull
     LocalDate dateOfBirth;
 }
